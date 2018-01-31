@@ -39,8 +39,8 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: ${DOCKER_IP:192.168.99.100}
-          zk-nodes: ${DOCKER_IP:192.168.99.100}
+          brokers: kafka
+          zk-nodes: kafka
       bindings:
         input:
           destination: account
@@ -52,10 +52,10 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://${DOCKER_IP:192.168.99.100}:8761/eureka
+      defaultZone: http://discovery:8761/eureka
     registryFetchIntervalSeconds: 5
   instance:
-    hostname: ${DOCKER_IP:192.168.99.100}
+    hostname: account-worker
     instance-id: ${spring.application.name}:${random.int}
     leaseRenewalIntervalInSeconds: 5
 ---

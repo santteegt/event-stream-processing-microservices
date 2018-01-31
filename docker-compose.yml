@@ -5,11 +5,10 @@ mysql:
   environment:
    - MYSQL_ROOT_PASSWORD=dbpass
    - MYSQL_DATABASE=dev
-  net: host
 redis:
   container_name: redis
+  hostname: redis
   image: redis:latest
-  net: host
 kafka:
   container_name: kafka
   image: spotify/kafka:latest
@@ -19,55 +18,75 @@ kafka:
   environment:
    - ADVERTISED_HOST=$DOCKER_IP
    - ADVERTISED_PORT=9092
-  net: host
 account-web:
   image: account-web
   environment:
    - SPRING_PROFILES_ACTIVE=docker
    - DOCKER_IP=$DOCKER_IP
-  net: host
+  links:
+   - mysql
+   - kafka
+   - discovery
 account-worker:
   image: account-worker
   environment:
    - SPRING_PROFILES_ACTIVE=docker
    - DOCKER_IP=$DOCKER_IP
-  net: host
+  links:
+   - kafka
+   - discovery
 order-web:
   image: order-web
   environment:
    - SPRING_PROFILES_ACTIVE=docker
    - DOCKER_IP=$DOCKER_IP
-  net: host
+  links:
+   - mysql
+   - kafka
+   - discovery
 order-worker:
   image: order-worker
   environment:
    - SPRING_PROFILES_ACTIVE=docker
    - DOCKER_IP=$DOCKER_IP
-  net: host
+  links:
+   - kafka
+   - discovery
 payment-web:
   image: payment-web
   environment:
    - SPRING_PROFILES_ACTIVE=docker
    - DOCKER_IP=$DOCKER_IP
-  net: host
+  links:
+   - mysql
+   - kafka
+   - discovery
 payment-worker:
   image: payment-worker
   environment:
    - SPRING_PROFILES_ACTIVE=docker
    - DOCKER_IP=$DOCKER_IP
-  net: host
+  links:
+   - kafka
+   - discovery
 warehouse-web:
   image: warehouse-web
   environment:
    - SPRING_PROFILES_ACTIVE=docker
    - DOCKER_IP=$DOCKER_IP
-  net: host
+  links:
+   - redis
+   - mysql
+   - kafka
+   - discovery
 warehouse-worker:
   image: warehouse-worker
   environment:
    - SPRING_PROFILES_ACTIVE=docker
    - DOCKER_IP=$DOCKER_IP
-  net: host
+  links:
+   - kafka
+   - discovery
 discovery:
   image: discovery
   ports:
@@ -75,10 +94,12 @@ discovery:
   environment:
    - SPRING_PROFILES_ACTIVE=docker
    - DOCKER_IP=$DOCKER_IP
-  net: host
 dashboard:
   image: dashboard
   environment:
    - SPRING_PROFILES_ACTIVE=docker
    - DOCKER_IP=$DOCKER_IP
-  net: host
+  ports:
+   - 3333:3333
+  links:
+   - discovery

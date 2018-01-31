@@ -33,14 +33,14 @@ spring:
 spring:
   profiles: docker
   redis:
-    host: ${DOCKER_IP:192.168.99.100}
+    host: redis
     port: 6379
   cloud:
     stream:
       kafka:
         binder:
-          brokers: ${DOCKER_IP:192.168.99.100}
-          zk-nodes: ${DOCKER_IP:192.168.99.100}
+          brokers: kafka
+          zk-nodes: kafka
       bindings:
         warehouse:
           contentType: 'application/json'
@@ -55,7 +55,7 @@ spring:
           contentType: 'application/json'
           destination: warehouse-stream
   datasource:
-    url: jdbc:mysql://${DOCKER_IP:192.168.99.100}:3306/dev
+    url: jdbc:mysql://mysql:3306/dev
     username: root
     password: dbpass
     initialize: true
@@ -67,10 +67,10 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://${DOCKER_IP:192.168.99.100}:8761/eureka
+      defaultZone: http://discovery:8761/eureka
     registryFetchIntervalSeconds: 5
   instance:
-    hostname: ${DOCKER_IP:192.168.99.100}
+    hostname: warehouse-web
     instance-id: ${spring.application.name}:${random.int}
     leaseRenewalIntervalInSeconds: 5
 ---

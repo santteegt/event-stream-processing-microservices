@@ -37,10 +37,10 @@ zuul:
 eureka:
   client:
     service-url:
-      defaultZone: http://${DOCKER_IP:192.168.99.100}:8761/eureka
+      defaultZone: http://discovery:8761/eureka
     registryFetchIntervalSeconds: 5
   instance:
-    hostname: ${DOCKER_IP:192.168.99.100}
+    hostname: dashboard
     instance-id: ${spring.application.name}:${random.int}
     leaseRenewalIntervalInSeconds: 5
 ---

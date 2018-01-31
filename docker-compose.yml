@@ -9,6 +9,8 @@ redis:
   container_name: redis
   hostname: redis
   image: redis:latest
+  ports:
+   - 6379:6379
 kafka:
   container_name: kafka
   image: spotify/kafka:latest
@@ -87,6 +89,25 @@ warehouse-worker:
   links:
    - kafka
    - discovery
+# load-simulator:
+#   image: load-simulator
+#   environment:
+#    - SPRING_PROFILES_ACTIVE=docker
+#    - DOCKER_IP=$DOCKER_IP
+#   links:
+#    - discovery
+data-flow-server:
+  image: data-flow-server
+  environment:
+   - SPRING_PROFILES_ACTIVE=docker
+   - DOCKER_IP=$DOCKER_IP
+  ports:
+   - 9393:9393
+  links:
+   - discovery
+   - kafka
+   - redis
+   - mysql
 discovery:
   image: discovery
   ports:
